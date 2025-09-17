@@ -3,7 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 3000; // A porta onde o servidor vai rodar
+// Linha Nova e Correta
+const PORT = process.env.PORT || 3000; // A porta onde o servidor vai rodar
 
 // Permite que o servidor entenda JSON e sirva os arquivos da pasta 'public'
 app.use(express.json({ limit: '10mb' }));
