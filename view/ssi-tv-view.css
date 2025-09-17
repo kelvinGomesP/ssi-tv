@@ -1,0 +1,205 @@
+/* =============================================== */
+/* CSS GERAL E LÓGICA DOS SLIDES                   */
+/* =============================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background-color: #000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#tv-view {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+/* Base para todos os slides (escondidos por padrão) */
+.slide {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #164194 0%, #008BD2 100%);
+    color: #fff;
+}
+
+/* Mostra apenas o slide que está ativo */
+.slide.active {
+    display: flex; /* Usamos flex para organizar o conteúdo interno */
+    flex-direction: column;
+}
+
+/* Animação de entrada suave */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.fade-in {
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* =============================================== */
+/* ESTILOS PARA SLIDES DE NOTÍCIA (SEU LAYOUT)     */
+/* =============================================== */
+
+/* Header (cabeçalho com título e data) */
+.tv-header {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0; /* Impede que o header encolha */
+}
+
+.header-title {
+    font-size: 2.2em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.datetime {
+    font-size: 1.5em;
+    font-weight: 300;
+}
+
+/* Container do conteúdo principal da notícia (imagem + texto) */
+.news-content {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1; /* Faz ocupar todo o espaço restante */
+    overflow: hidden;
+}
+
+/* Seção da imagem (esquerda) */
+.image-section {
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.news-image {
+    max-width: 100%;   /* <-- ADICIONADO/AJUSTADO */
+    max-height: 100%;  /* <-- ADICIONADO/AJUSTADO */
+    width: auto;       /* <-- AJUSTADO */
+    height: auto;      /* <-- AJUSTADO */
+    object-fit: contain; /* <-- VOLTOU PARA 'contain' */
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Seção dos detalhes (direita) */
+.details-section {
+    width: 30%;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Adiciona scroll se o texto for muito grande */
+}
+
+.news-title {
+    font-size: 2.8em;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #52AE32; /* Borda verde de destaque */
+    padding-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.news-description {
+    font-size: 1.8em;
+    line-height: 1.5;
+    flex-grow: 1; /* Ocupa o espaço para empurrar o "tempo de exibição" para baixo */
+}
+
+/* Layout para notícias SEM imagem */
+.news-no-image {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+/* =============================================== */
+/* ESTILOS PARA SLIDES DE DASHBOARD                */
+/* =============================================== */
+
+.dashboard-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* =============================================== */
+/* CONTROLES E INDICADORES (RODAPÉ)                */
+/* =============================================== */
+
+.controls, .slide-indicator {
+    position: absolute;
+    bottom: 20px;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 1.2em;
+}
+
+.controls {
+    right: 20px;
+}
+
+.slide-indicator {
+    left: 20px;
+}
+
+.controls button {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+}
+
+.controls button:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* =============================================== */
+/* BARRA DE SCROLL PERSONALIZADA                   */
+/* =============================================== */
+.details-section::-webkit-scrollbar {
+    width: 8px;
+}
+.details-section::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+.details-section::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+.details-section::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}

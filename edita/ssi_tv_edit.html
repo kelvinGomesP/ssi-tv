@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSI TV - Edição de Conteúdo</title>
+    <link rel="stylesheet" href="ssi-tv-edit.css">
+</head>
+<body>
+    <div class="container-geral">
+        <div class="header">
+            <div class="logo-container">
+                <div class="header-title">SSI TV - Edição de Conteúdo</div>
+            </div>
+            <div class="datetime" id="datetime"></div>
+        </div>
+        
+        <div class="main-container">
+            <div class="tab-navigation">
+                <button class="tab-button active" data-tab="edit-tab">
+                    <i class="icon">➕</i> Editar Conteúdo
+                </button>
+                <button class="tab-button" data-tab="preview-tab">
+                    <i class="icon">👁️</i> Pré-visualizar
+                </button>
+            </div>
+            
+            <div id="edit-tab" class="tab-content active">
+                <div class="form-section">
+                    <h2 class="section-title">Adicionar / Editar Notícia</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="news-title">Título:</label>
+                            <input type="text" id="news-title" placeholder="Digite o título da notícia ou evento">
+                        </div>
+                        <div class="form-group">
+                            <label for="news-description">Descrição:</label>
+                            <textarea id="news-description" placeholder="Digite a descrição ou detalhes"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="news-image">URL da Imagem:</label>
+                            <input type="text" id="news-image" placeholder="Cole o URL da imagem">
+                            <div class="file-upload">
+                                <input type="file" id="image-upload" accept="image/*">
+                                <label for="image-upload" class="upload-button">📁 Escolher arquivo</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="display-time">Tempo de exibição (segundos):</label>
+                            <input type="number" id="display-time" value="15" min="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="news-start-date">Data de Início (Opcional):</label>
+                            <input type="date" id="news-start-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="news-end-date">Data de Fim (Opcional):</label>
+                            <input type="date" id="news-end-date">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button id="btn-add-news" onclick="addNews()" class="primary-btn">Adicionar Notícia</button>
+                        <button id="btn-clear-news" onclick="clearNewsForm()" class="secondary-btn">Limpar Campos</button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title">Adicionar / Editar Dashboard</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="dashboard-url">URL do Dashboard:</label>
+                            <input type="text" id="dashboard-url" placeholder="Cole o URL de inserção (view?r=...)">
+                        </div>
+                        <div class="form-group">
+                            <label for="dashboard-title">Título do Dashboard:</label>
+                            <input type="text" id="dashboard-title" placeholder="Título para identificar o dashboard">
+                        </div>
+                        <div class="form-group">
+                            <label for="dashboard-time">Tempo de exibição (segundos):</label>
+                            <input type="number" id="dashboard-time" value="30" min="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="dashboard-start-date">Data de Início (Opcional):</label>
+                            <input type="date" id="dashboard-start-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="dashboard-end-date">Data de Fim (Opcional):</label>
+                            <input type="date" id="dashboard-end-date">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button id="btn-add-dashboard" onclick="addDashboard()" class="primary-btn">Adicionar Dashboard</button>
+                        <button id="btn-clear-dashboard" onclick="clearDashboardForm()" class="secondary-btn">Limpar Campos</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="preview-tab" class="tab-content">
+                <h2 class="section-title">Pré-visualização do Conteúdo</h2>
+                <p class="subtitle">Ordem de exibição atual (arraste para reordenar):</p>
+                <div id="items-list" class="items-list"></div>
+                <div class="preview-actions">
+                    <button onclick="saveOrder()" class="primary-btn">Salvar Ordem</button>
+                    <button onclick="openViewPage()" class="view-btn">Abrir Visualização na TV</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <span id="notification-message"></span>
+    </div>
+
+    <script src="ssi-tv-edit.js"></script>
+</body>
+</html>
