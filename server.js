@@ -1,46 +1,72 @@
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
+const { Pool } = require('pg'); // Importa o "tradutor" do PostgreSQL
 
 const app = express();
-// Linha Nova e Correta
-const PORT = process.env.PORT || 3000; // A porta onde o servidor vai rodar
+const PORT = process.env.PORT || 3000;
 
-// Permite que o servidor entenda JSON e sirva os arquivos da pasta 'public'
+// Configura a conexão com o banco de dados usando a URL que colocamos no Render
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+// Função que cria nossa tabela no banco de dados se ela não existir
+const createTable = async () => {
+    const client = await pool.connect();
+    try {
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS content_storage (
+                id INT PRIMARY KEY,
+                data JSONB
+            );
+        `);
+        // Garante que sempre haverá uma linha para guardar nosso conteúdo
+        await client.query(`
+            INSERT INTO content_storage (id, data)
+            VALUES (1, '[]'::jsonb)
+            ON CONFLICT (id) DO NOTHING;
+        `);
+    } finally {
+        client.release();
+    }
+};
+
 app.use(express.json({ limit: '10mb' }));
-// CORREÇÃO IMPORTANTE: Vamos assumir que os arquivos estão na raiz por enquanto.
 app.use(express.static(path.join(__dirname)));
 
-// O caminho para o nosso "banco de dados" em arquivo
-const dbPath = path.join(__dirname, 'content.json');
-
-// ROTA PARA LER a lista de conteúdos
-app.get('/api/content', (req, res) => {
-    fs.readFile(dbPath, 'utf8', (err, data) => {
-        if (err) {
-            if (err.code === 'ENOENT') {
-                return res.json([]);
-            }
-            return res.status(500).send('Erro ao ler o conteúdo.');
-        }
-        res.json(JSON.parse(data));
-    });
+// ROTA PARA LER o conteúdo do banco de dados
+app.get('/api/content', async (req, res) => {
+    try {
+        const client = await pool.connect();
+        const result = await client.query('SELECT data FROM content_storage WHERE id = 1');
+        res.json(result.rows[0].data);
+        client.release();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erro ao ler o conteúdo do banco de dados.');
+    }
 });
 
-// ROTA PARA SALVAR a lista de conteúdos
-app.post('/api/content', (req, res) => {
+// ROTA PARA SALVAR o conteúdo no banco de dados
+app.post('/api/content', async (req, res) => {
     const content = req.body;
-    fs.writeFile(dbPath, JSON.stringify(content, null, 2), 'utf8', (err) => {
-        if (err) {
-            return res.status(500).send('Erro ao salvar o conteúdo.');
-        }
-        res.status(200).send({ message: 'Conteúdo salvo com sucesso.' });
-    });
+    try {
+        const client = await pool.connect();
+        // Atualiza a linha que guarda nosso conteúdo
+        await client.query('UPDATE content_storage SET data = $1 WHERE id = 1', [JSON.stringify(content)]);
+        res.status(200).send({ message: 'Conteúdo salvo com sucesso no banco de dados.' });
+        client.release();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erro ao salvar o conteúdo no banco de dados.');
+    }
 });
 
-// Inicia o servidor e avisa no console
+// Inicia o servidor e prepara o banco de dados
 app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
-    console.log(`Acesse a EDIÇÃO em: http://localhost:${PORT}/edita/ssi_tv_edit.html`);
-    console.log(`Acesse a TV em:      http://localhost:${PORT}/view/ssi-tv-view.html`);
+    createTable().catch(console.error);
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
